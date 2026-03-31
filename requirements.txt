@@ -1,0 +1,5 @@
+IF YOU ARE WORKING ON THE GUI
+
+run (IN A VIRTUAL ENVIRONMENT)
+"pip install -U wxPython"
+to install necessary library for WXWidgets

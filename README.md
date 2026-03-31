@@ -1,1 +1,1 @@
-thanks
+# Smart Fan Project
