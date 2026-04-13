@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
     # continual communication with arduino, remember ctrl + c to keyboard interrupt
     while True:
-        sleep(.5)   # test lol
+        #sleep(.5)   # test lol
         if ser.in_waiting:
             # read line in serial monitor
             line = ser.readline().decode(errors='ignore').strip()
