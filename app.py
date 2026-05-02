@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URL'] = 'sqlite:///test.db'
 
 # initialize the database using the information from the app
+"""
 db = SQLAlchemy(app)
 
 
@@ -23,6 +24,7 @@ class myTest(db.Model):
 
     def __rep__(self):
         return 'Item <%r>' % self.id
+"""
 
 # once SQLite database is finalized,
 # open the terminal and type the following:
