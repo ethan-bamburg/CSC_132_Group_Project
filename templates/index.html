@@ -1,10 +1,159 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<h1>blockhead</h1>
 {% endblock %}
 
 {% block body %} 
-<h1>Template</h1>
-<h2>Woah</h2>
+
+<!-- Page Overlay -->
+ <div class="page-overlay hidden" id="pageOverlay"></div>
+
+<!-- Center Panel -->
+<div class="main-content p-0">
+  <!-- Top Menu -->
+  <ul class="nav nav-tabs d-flex p-0" id="mainTabs">
+    <li class="nav-item">
+      <button class="nav-link active" onclick="switchTab('dashboard')">Dashboard</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" onclick="switchTab('dataViewer')">Data Viewer</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" onclick="switchTab('settings')">Settings</button>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content p-3">
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="tab-pane active">
+      <h3>Dashboard</h3>
+      <button onclick="callPython('task1')">Run Python Task 1</button>
+
+      <div class="chart-grid">
+        <div class="chart-card"><canvas id="chart1"></canvas></div>
+        <div class="chart-card"><canvas id="chart2"></canvas></div>
+        <div class="chart-card"><canvas id="chart3"></canvas></div>
+      </div>
+    </div>
+
+    <!-- DATA VIEWER -->
+
+    <div id="dataViewer" class="tab-pane d-none">
+      <h3>Data Viewer</h3>
+      <button onclick="callPython('task2')">Run Python Task 2</button>
+
+    </div>
+
+    <!-- SETTINGS -->
+
+    <div id="settings" class="tab-pane d-none">
+      <h3>Settings</h3>
+      <button onclick="callPython('task3')">Run Python Task 3</button>
+    </div>
+  </div>
+</div>
+
+<!-- Right Side Info Panel -->
+<div class="side-panel">
+  <h4>Side Panel</h4>
+  <p>stuff</p>
+</div>
+
+
+<script>
+    const socket = io();
+
+    function disableOverlay() {
+    document.getElementById("pageOverlay").classList.remove("hidden");
+    }
+
+
+    function switchTab(tabId) {
+    document.querySelectorAll('.tab-pane').forEach(p => {
+        p.classList.add('d-none');
+        p.classList.remove('active');
+    });
+
+    document.getElementById(tabId).classList.remove('d-none');
+    document.getElementById(tabId).classList.add('active');
+
+    // update active button
+    document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    }
+
+    function addEvent(message) {
+        const eventViewer = document.getElementById("eventlogs");
+
+        const time = new Date().toLocaleTimeString();
+
+        if (eventViewer.children.length > 25) {
+            eventViewer.removeChild(eventViewer.lastChild);
+        }
+
+        const line = document.createElement("div");
+        line.textContent = `[${time}] > ${message.msg}`;
+
+        eventViewer.appendChild(line);
+
+        // auto-scroll to bottom
+        eventViewer.scrollTop = eventViewer.scrollHeight;
+    }
+
+    function createChart(canvasId, label, data, color, type = 'line') {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+
+    return new Chart(ctx, {
+        type: type,
+        data: {
+            labels: ['A', 'B', 'C', 'D'],
+            datasets: [{
+                label: label,
+                data: data,
+                backgroundColor: color + '80',
+                borderColor: color,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+    }
+
+     const charts = {};
+
+    charts.chart1 = createChart('chart1', 'Temperature', [10, 20, 30, 15], '#2563eb');
+    charts.chart2 = createChart('chart2', 'Humidity', [5, 15, 25, 10], '#16a34a');
+    charts.chart3 = createChart('chart3', 'Wind Speed', [12, 18, 22, 8], '#ef4444');
+
+
+    function updateChart(chartName, newData) {
+    charts[chartName].data.datasets[0].data = newData;
+    charts[chartName].update();
+    }
+
+    /* PYTHON BACKEND */
+    function callPython(taskName) {
+    fetch('/run-task', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ task: taskName })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Python says: " + data.result);
+    })
+    .catch(err => console.error(err));
+    }
+
+    socket.on('run_js', (data) => {
+        addEvent(data);
+    });
+</script>
 {% endblock %}

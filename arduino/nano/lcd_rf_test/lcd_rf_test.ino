@@ -1,13 +1,22 @@
+// RF libs
 #include <RH_ASK.h>
 #include <SPI.h>
+// LCD lib
 #include <LiquidCrystal.h>
 
 // RF: speed, RX pin, TX pin
 RH_ASK driver(2000, 7, 6);
-
+// LCD pins
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+// Button pins
+const int ASK_DATA_PIN = A0;
+const int TOG_OSCILATION_PIN = A1;
+const int TOG_SMART_PIN = A2;
+const int INC_TEMP_PIN = A3;
+const int DEC_TEMP_PIN = A4;
 
-const char *msg = "test message";
+// So we know who's communicating
+const char *nanoID = "89Nano: ";
 
 unsigned long lastSend = 0;
 
@@ -20,10 +29,8 @@ void setup() {
 void loop() {
 
   if (millis() - lastSend > 2000) {
-    const char *msg = "Hello RF";
 
-    driver.send((uint8_t *)msg, strlen(msg));
-    driver.waitPacketSent();
+    sendRF();
 
     lastSend = millis();
   }
@@ -44,4 +51,12 @@ void loop() {
   }
 
 
+}
+
+void sendRF() {
+  char message[50];
+    snprintf(message, sizeof(message), "%s%s", nanoID, "Hello RF");
+
+    driver.send((uint8_t *)message, strlen(message));
+    driver.waitPacketSent();
 }

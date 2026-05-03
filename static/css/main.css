@@ -1,4 +1,94 @@
 body {
-    margin: 0;
-    font-family: sans-serif;
+  background-color: #2563eb;
+}
+
+p {
+  color: #253762;
+}
+
+h1, h2, h3, h4 {
+    color: white;
+}
+
+.page-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.4); /* dark overlay */
+    
+    z-index: 10;
+}
+
+.hidden {
+    display: none;
+}
+
+
+.side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100vh;
+    background: #60a5fa;
+    border-left: 1px solid #ddd;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.main-content {
+    margin-right: 400px; /* Sidebar width */
+    padding: 20px;
+    height: 100vh;
+}
+
+.nav-tabs {
+    width: 100%;
+    background:  #60a5fa;
+}
+
+.nav-tabs .nav-item {
+  flex: 1;
+}
+
+.nav-tabs .nav-link {
+    width: 100%;
+    aspect-ratio: 1 / .15; /* makes buttons square */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    font-weight: bold;
+    background-color: #0d6efd; /* Bootstrap primary or your custom color */
+    color: white;
+    border-color: #0d6efd;
+}
+
+ul.nav-tabs .nav-link.active {
+  background-color: #1d4ed8; /* Bootstrap primary or your custom color */
+  color: white;
+  border-color: #0d6efd;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 50px;
+}
+
+.chart-row {
+    display: table-row;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 50px;
+}
+
+.chart-card {
+    background: #87baf9;
+    padding: 15px;
+    height: 300px;
+    border: 3px;
+    border-color: #253762;
 }

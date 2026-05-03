@@ -1,5 +1,9 @@
 
+const int TEMP_PIN = A0;
+
 bool paired = false;
+
+int sensorVal = 20.0;
 
 void setup() {
   // make sure it's the same as python communicator
@@ -8,6 +12,9 @@ void setup() {
 
 void loop() {
   // are we connected to serial?
+  sensorVal = analogRead(TEMP_PIN);
+  Serial.println(sensorVal);
+
   if (Serial.available()) {
     // read the line, store it
     String line = Serial.readStringUntil('\n');
@@ -16,7 +23,7 @@ void loop() {
     if(!paired && line == "PAIR") {
       Serial.println("PAIR_OK");
     }
-    else {
+    else if(paired) {
       if(line == "GET_DATA") {
         Serial.println("DATA");
       }
