@@ -10,6 +10,13 @@ h1, h2, h3, h4 {
     color: white;
 }
 
+hr {
+    border: none;
+    height: 2px;
+    background-color: #ffffff;
+    width: 100%;
+}
+
 .page-overlay {
     position: fixed;
     top: 0;
@@ -61,11 +68,13 @@ h1, h2, h3, h4 {
     align-items: center;
     justify-content: center;
     border-radius: 0;
-    font-weight: bold;
+    font-size: 35px;
+    font-family: "Lucida Console", "Courier New", monospace;
     background-color: #0d6efd; /* Bootstrap primary or your custom color */
     color: white;
     border-color: #0d6efd;
 }
+
 
 ul.nav-tabs .nav-link.active {
   background-color: #1d4ed8; /* Bootstrap primary or your custom color */
