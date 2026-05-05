@@ -30,8 +30,27 @@
     <div id="dashboard" class="tab-pane active">
       <h3>Dashboard</h3>
       <hr>
-      <button onclick="callPython('task1')">Run Python Task 1</button>
 
+      <!-- Mode Selector -->
+      <div class="sum">
+        <p>Smart Technology</p>
+
+        <button onclick="callPython('task1')">Run Task 1</button>
+
+
+      </div>
+
+      <hr>
+      <!-- RPM Fields -->
+      <div class="sum">
+        <p>RPM Manager</p>
+
+        <button onclick="callPython('task1')">Run Task 1</button>
+
+      </div>
+
+      <hr>
+      <!-- Mini Dashboard Charts -->
       <div class="chart-grid">
         <div class="chart-card"><canvas id="chart1"></canvas></div>
         <div class="chart-card"><canvas id="chart2"></canvas></div>
@@ -43,7 +62,7 @@
 
     <div id="dataViewer" class="tab-pane d-none">
       <h3>Data Viewer</h3>
-      <button onclick="callPython('task2')">Run Python Task 2</button>
+      <button onclick="callPython('task2')">Run Task 2</button>
 
     </div>
 
@@ -51,7 +70,7 @@
 
     <div id="settings" class="tab-pane d-none">
       <h3>Settings</h3>
-      <button onclick="callPython('task3')">Run Python Task 3</button>
+      <button onclick="callPython('task3')">Run Task 3</button>
     </div>
   </div>
 </div>
@@ -62,9 +81,14 @@
   <p>stuff</p>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
 
 <script>
     const socket = io();
+    
+    let isConnected = false;
 
     function disableOverlay() {
     document.getElementById("pageOverlay").classList.remove("hidden");
@@ -103,13 +127,13 @@
         eventViewer.scrollTop = eventViewer.scrollHeight;
     }
 
-    function createChart(canvasId, label, data, color, type = 'line') {
+    function createChart(canvasId, label, labels, data, color, type = 'line') {
     const ctx = document.getElementById(canvasId).getContext('2d');
 
     return new Chart(ctx, {
         type: type,
         data: {
-            labels: ['A', 'B', 'C', 'D'],
+            labels: labels,
             datasets: [{
                 label: label,
                 data: data,
@@ -127,9 +151,9 @@
 
      const charts = {};
 
-    charts.chart1 = createChart('chart1', 'Temperature', [10, 20, 30, 15], '#2563eb');
-    charts.chart2 = createChart('chart2', 'Humidity', [5, 15, 25, 10], '#16a34a');
-    charts.chart3 = createChart('chart3', 'Wind Speed', [12, 18, 22, 8], '#ef4444');
+    charts.chart1 = createChart('chart1', 'Temperature', ['A', 'B', 'C', 'D'], [10, 20, 30, 15], '#2563eb');
+    charts.chart2 = createChart('chart2', 'Humidity', ['A', 'B', 'C', 'D'], [5, 15, 25, 10], '#16a34a');
+    charts.chart3 = createChart('chart3', 'Wind Speed', ['12:00', 'B', 'C', 'D'], [12, 18, 22, 8], '#ef4444');
 
 
     function updateChart(chartName, newData) {
@@ -157,4 +181,5 @@
         addEvent(data);
     });
 </script>
+
 {% endblock %}

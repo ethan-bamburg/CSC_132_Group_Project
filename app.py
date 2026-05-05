@@ -71,13 +71,11 @@ def run_task():
 
 @app.route('/')
 def index():
-    print("HOME ROUTE HIT")
     return render_template('index.html')
 
 # threading.Thread(target=background_worker, daemon=True).start()
 
 if __name__ == "__main__":
-    print("🔥 HOME ROUTE HIT")
     app.run(debug=True)
     
    # socketio.run(app, debug=True)
