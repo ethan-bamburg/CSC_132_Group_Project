@@ -1,13 +1,15 @@
 body {
-  background-color: #2563eb;
+  background-color: #4D5F80;
 }
 
 p {
   color: #253762;
+  font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", serif;
 }
 
 h1, h2, h3, h4 {
-    color: white;
+    color: #FFFFFF;
+    font-family: 'Trebuchet MS', sans-serif;
 }
 
 hr {
@@ -40,7 +42,7 @@ hr {
     right: 0;
     width: 400px;
     height: 100vh;
-    background: #60a5fa;
+    background: #758CC0;
     border-left: 1px solid #ddd;
     padding: 20px;
     overflow-y: auto;
@@ -63,23 +65,28 @@ hr {
 
 .nav-tabs .nav-link {
     width: 100%;
-    aspect-ratio: 1 / .15; /* makes buttons square */
+    aspect-ratio: 1 / .15; /* RATIO */
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 0;
     font-size: 35px;
     font-family: "Lucida Console", "Courier New", monospace;
-    background-color: #0d6efd; /* Bootstrap primary or your custom color */
+    background-color: #758CC0; 
     color: white;
-    border-color: #0d6efd;
+    border-color: #FFFFFF;
 }
 
 
 ul.nav-tabs .nav-link.active {
-  background-color: #1d4ed8; /* Bootstrap primary or your custom color */
+  background-color: #4D5F80; 
   color: white;
-  border-color: #0d6efd;
+  border-color: #758CC0;
+}
+
+.btn .btn-secondary {
+    background-color: #758CC0;
+    color: black;
 }
 
 .chart-grid {
@@ -89,15 +96,30 @@ ul.nav-tabs .nav-link.active {
 }
 
 .chart-row {
-    display: table-row;
+    display: table-column;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 50px;
 }
 
 .chart-card {
-    background: #87baf9;
-    padding: 15px;
+    background: #758CC0;
+    padding: 5px;
     height: 300px;
-    border: 3px;
-    border-color: #253762;
+    border-width: 3px;
+    border-color: #FFFFFF;
+}
+
+.fan-icon {
+    background-image: url('../images.jpeg');
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-size: contain;   /* set to cover if it looks ugly */
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.form-control {
+    background-color: #758CC0;
+    border-color: #FFFFFF;
+    color: #FFFFFF;
 }
