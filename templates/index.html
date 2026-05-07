@@ -28,28 +28,58 @@
 
     <!-- DASHBOARD -->
     <div id="dashboard" class="tab-pane active">
-      <h3>Dashboard</h3>
+      <h2>Dashboard</h2>
       <hr>
 
       <!-- Mode Selector -->
-      <div class="sum">
-        <p>Smart Technology</p>
+      <div>
+        <h3>Fan Mode</h3>
 
-        <button onclick="callPython('task1')">Run Task 1</button>
+        <div class="btn-group btn-group-lg" role="group">
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Smart</button>
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Power</button>
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">some other option i forgor</button>
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Basic</button>
+        </div>
+
+
+      </div>
+
+      <hr>
+      <!-- Input Fields -->
+      <div class="sum">
+        <!-- RPM -->
+        <h3>RPM Control:</h3>
+
+
+        <div class="btn-group mb-3" role="toolbar">
+          <h4>Min</h4>
+          <input type="number" min="0" class="form-control" placeholder="Minimum RPM" id="minRpm">
+
+          <h4>Max</h4>
+          <input type="number" min="0" class="form-control" placeholder="Maximum RPM" id="maxRpm">
+
+        </div>
+
+        <!-- Temp -->
+        <h3>Temperature Control:</h3>
+
+        <div>
+
+        </div>
+
+        <!-- Input -->
+        <h3>Input Control:</h3>
+
+        <div>
+
+        </div>
 
 
       </div>
 
       <hr>
-      <!-- RPM Fields -->
-      <div class="sum">
-        <p>RPM Manager</p>
 
-        <button onclick="callPython('task1')">Run Task 1</button>
-
-      </div>
-
-      <hr>
       <!-- Mini Dashboard Charts -->
       <div class="chart-grid">
         <div class="chart-card"><canvas id="chart1"></canvas></div>
@@ -61,7 +91,21 @@
     <!-- DATA VIEWER -->
 
     <div id="dataViewer" class="tab-pane d-none">
-      <h3>Data Viewer</h3>
+
+      <!-- Header Field w/ buttons (File, Import, Export, del, new, etc.) -->
+      <div>
+        <h2>Data Viewer</h2>
+
+
+      </div>
+
+      <hr>
+      <!-- CHARTS -->
+       <div class="chart-grid">
+        <div class="chart-card"><canvas id="chart1"></canvas></div>
+        <div class="chart-card"><canvas id="chart2"></canvas></div>
+        <div class="chart-card"><canvas id="chart3"></canvas></div>
+      </div>
       <button onclick="callPython('task2')">Run Task 2</button>
 
     </div>
@@ -69,7 +113,10 @@
     <!-- SETTINGS -->
 
     <div id="settings" class="tab-pane d-none">
-      <h3>Settings</h3>
+      <h2>Settings</h2>
+      <hr>
+
+
       <button onclick="callPython('task3')">Run Task 3</button>
     </div>
   </div>
@@ -77,8 +124,20 @@
 
 <!-- Right Side Info Panel -->
 <div class="side-panel">
-  <h4>Side Panel</h4>
-  <p>stuff</p>
+  <h4 class="text-center">Status: Unpaired</h4>
+  <div class="fan-icon"></div>
+
+  <div class="event-viewer">
+
+    <div class="top-bar">
+      
+    </div>
+
+    <div class="event-logs">
+
+    </div>
+
+  </div>
 </div>
 
 {% endblock %}
@@ -86,15 +145,22 @@
 {% block scripts %}
 
 <script>
-    const socket = io();
+
+  /*
+  GENERAL CRAP I DON'T CARE TO LABEL
+  */
+    // web socket
+    //const socket = io();
     
+    // to check if we are paired, hidden flag
     let isConnected = false;
 
+    // disables the global transparent layer
     function disableOverlay() {
     document.getElementById("pageOverlay").classList.remove("hidden");
     }
 
-
+    // switches tabs in the main content
     function switchTab(tabId) {
     document.querySelectorAll('.tab-pane').forEach(p => {
         p.classList.add('d-none');
@@ -109,6 +175,11 @@
     event.target.classList.add('active');
     }
 
+    /*
+    EVENT LOGS MANAGER
+    */
+
+    // add a new log to the event logs
     function addEvent(message) {
         const eventViewer = document.getElementById("eventlogs");
 
@@ -127,6 +198,21 @@
         eventViewer.scrollTop = eventViewer.scrollHeight;
     }
 
+    /*
+    FIELDS & INPUT MANAGER
+    */
+
+    const rpmInput = document.getElementById("minRpm");
+
+    rpmInput.addEventListener("input", function () {
+        console.log("RPM:", rpmInput.value);
+    });
+
+    /*
+    CHARTS & INFO
+    */
+
+    // chart wrapper, makes it easier to create & manage charts
     function createChart(canvasId, label, labels, data, color, type = 'line') {
     const ctx = document.getElementById(canvasId).getContext('2d');
 
@@ -149,19 +235,25 @@
     });
     }
 
-     const charts = {};
+    // list of charts, to keep track of updating
+    const charts = {};
 
+    // create charts- uwu
     charts.chart1 = createChart('chart1', 'Temperature', ['A', 'B', 'C', 'D'], [10, 20, 30, 15], '#2563eb');
     charts.chart2 = createChart('chart2', 'Humidity', ['A', 'B', 'C', 'D'], [5, 15, 25, 10], '#16a34a');
     charts.chart3 = createChart('chart3', 'Wind Speed', ['12:00', 'B', 'C', 'D'], [12, 18, 22, 8], '#ef4444');
 
-
+    // function to update charts, believe it or not
     function updateChart(chartName, newData) {
     charts[chartName].data.datasets[0].data = newData;
     charts[chartName].update();
     }
 
-    /* PYTHON BACKEND */
+    /*
+    BACKEND COMMUNICATION
+    */
+   
+    // function connected to python
     function callPython(taskName) {
     fetch('/run-task', {
         method: 'POST',
@@ -177,9 +269,12 @@
     .catch(err => console.error(err));
     }
 
+    /*
+    // web socket connector
     socket.on('run_js', (data) => {
         addEvent(data);
     });
+    */
 </script>
 
 {% endblock %}
