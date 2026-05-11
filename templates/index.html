@@ -38,8 +38,8 @@
         <div class="btn-group btn-group-lg" role="group">
           <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Smart</button>
           <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Power</button>
-          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">some other option i forgor</button>
-          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Basic</button>
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Comfort</button>
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Manual</button>
         </div>
 
 
@@ -52,7 +52,7 @@
         <h3>RPM Control:</h3>
 
 
-        <div class="btn-group mb-3" role="toolbar">
+        <div class="btn-group mb-3 p-1" role="toolbar">
           <h4>Min</h4>
           <input type="number" min="0" class="form-control" placeholder="Minimum RPM" id="minRpm">
 
@@ -65,14 +65,17 @@
         <h3>Temperature Control:</h3>
 
         <div>
-
+            <input type="number" min="0" class="form-control" placeholder="Desired Temperature" id="dTemp">
         </div>
 
         <!-- Input -->
         <h3>Input Control:</h3>
-
-        <div>
-
+        
+        <div class="btn-group btn-group-lg" role="group">
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Computer & Remote</button>
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Computer only</button>
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Remote only</button>
+          <button type="button" class="btn btn-secondary" onclick="callPython('task1')">Disabled</button>
         </div>
 
 
@@ -126,14 +129,18 @@
 <div class="side-panel">
   <h4 class="text-center">Status: Unpaired</h4>
   <div class="fan-icon"></div>
+  <h4 class="text-center">Battery: 0%</h4>
+  <h4 class="text-center">Temperature: 0°</h4>
+  <h4 class="text-center">Humidity: 0</h4>
+  <h4 class="text-center">RPM: 0</h4>
 
   <div class="event-viewer">
 
-    <div class="top-bar">
-      
+    <div class="event-bar">
+      <h4>Event Viewer</h4>
     </div>
 
-    <div class="event-logs">
+    <div id="event-logs">
 
     </div>
 
@@ -150,14 +157,14 @@
   GENERAL CRAP I DON'T CARE TO LABEL
   */
     // web socket
-    //const socket = io();
+    const socket = io();
     
     // to check if we are paired, hidden flag
     let isConnected = false;
 
     // disables the global transparent layer
     function disableOverlay() {
-    document.getElementById("pageOverlay").classList.remove("hidden");
+    document.getElementById("pageOverlay").classList.add("hidden");
     }
 
     // switches tabs in the main content
@@ -181,7 +188,7 @@
 
     // add a new log to the event logs
     function addEvent(message) {
-        const eventViewer = document.getElementById("eventlogs");
+        const eventViewer = document.getElementById("event-logs");
 
         const time = new Date().toLocaleTimeString();
 
@@ -202,10 +209,31 @@
     FIELDS & INPUT MANAGER
     */
 
-    const rpmInput = document.getElementById("minRpm");
+    const minRpmInput = document.getElementById("minRpm");
+    const maxRpmInput = document.getElementById("maxRpm");
 
-    rpmInput.addEventListener("input", function () {
-        console.log("RPM:", rpmInput.value);
+    minRpmInput.addEventListener("input", function () {
+      const rpm_field = Number(minRpmInput.value);
+      if(rpm_field < 0) 
+      {
+        minRpmInput.value = 0;
+      }
+      else if(rpm_field > 80)
+      {
+        minRpmInput.value = 80;
+      }
+    });
+
+    maxRpmInput.addEventListener("input", function () {
+      const rpm_field = Number(maxRpmInput.value);
+      if(rpm_field < 0) 
+      {
+        maxRpmInput.value = 0;
+      }
+      else if(rpm_field > 80)
+      {
+        maxRpmInput.value = 80;
+      }
     });
 
     /*
@@ -230,7 +258,19 @@
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.2)' // Changes Y-axis grid lines to light red
+                }
+              },
+              x: {
+                grid: {
+                  color: '#FFFFFF' // Changes X-axis grid lines to light grey
+                }
+              }
+            }
         }
     });
     }
@@ -239,9 +279,9 @@
     const charts = {};
 
     // create charts- uwu
-    charts.chart1 = createChart('chart1', 'Temperature', ['A', 'B', 'C', 'D'], [10, 20, 30, 15], '#2563eb');
-    charts.chart2 = createChart('chart2', 'Humidity', ['A', 'B', 'C', 'D'], [5, 15, 25, 10], '#16a34a');
-    charts.chart3 = createChart('chart3', 'Wind Speed', ['12:00', 'B', 'C', 'D'], [12, 18, 22, 8], '#ef4444');
+    charts.chart1 = createChart('chart1', 'Temperature', ['12:00', '12:01', '12:02', '12:03'], [10, 20, 30, 15], '#2563eb');
+    charts.chart2 = createChart('chart2', 'Humidity', ['12:00', '12:01', '12:02', '12:03'], [5, 15, 25, 10], '#16a34a');
+    charts.chart3 = createChart('chart3', 'Wind Speed', ['12:00', '12:01', '12:02', '12:03'], [12, 18, 22, 8], '#ef4444');
 
     // function to update charts, believe it or not
     function updateChart(chartName, newData) {
@@ -269,12 +309,13 @@
     .catch(err => console.error(err));
     }
 
-    /*
+    
     // web socket connector
     socket.on('run_js', (data) => {
+      console.log(data.msg);
         addEvent(data);
     });
-    */
+    
 </script>
 
 {% endblock %}

@@ -58,23 +58,22 @@ def pair_serial():
     return None
 
 
-def handle_message(msg):
-    # Handle what the arduino responds with
-    debug_wrap("R: ", msg)
-
-    if msg.startswith("DATA"):
-        # Data protocol, everything after is what we need
-        data = msg[5:]
-        debug_wrap("Sensor data:", data)
-
-    elif msg.startswith("EVENT"):
-        # Event protocal, we need to log this
-        event = msg[6:]
-        debug_wrap("Event:", event)
-
-    elif msg.startswith("ACK"):
-        # Our operation was a success
-        debug_wrap("Success:", msg)
+def serial_send(ser, type, msg):
+    # Handle what the arduino can respond to
+    if type == 1:
+        ser.write(b"DATA")
+    elif type == 2: # mode change
+        ser.write(("SET: MC" + msg + "\n").encode())
+    elif type == 3: # temp change
+        ser.write(("SET: DTC"))
+    elif type == 4: # min speed change
+        ser.write("SET: MIF")
+    elif type == 5: # max speed change
+        ser.write("SET: MAF")
+    elif type == 6: # oscilation
+        ser.write("SET: T_O")
+    elif type == 7: # input change
+        ser.write("SET: IC")
 
 if __name__ == "__main__":
     # find the serial port the arduino is connected to
@@ -89,6 +88,7 @@ if __name__ == "__main__":
     if ser.in_waiting:
             msg = ser.readline().decode(errors='ignore').strip()
             handle_message(msg)
+            ser.write(b"DATA")
 
 
 
